@@ -11,3 +11,7 @@ data class SearchResponse(@SerializedName("Response")
                           @SerializedName("Search")
                           var search: List<SearchItem>?)
 
+
+
+const val SEARCH_RESPONSE_TRUE = "TRUE"
+const val SEARCH_RESPONSE_FALSE = "FASLE"
