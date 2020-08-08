@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.widget.SearchView
 
 
 object CommonUtils {
@@ -17,6 +18,12 @@ object CommonUtils {
         val inputMethodManager: InputMethodManager =
             activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
+    }
+
+     fun hideKeyboard(activity: Activity, searchView: SearchView) {
+        val imm: InputMethodManager =
+            activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(searchView.windowToken, 0)
     }
 
 

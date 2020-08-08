@@ -14,4 +14,4 @@ data class SearchResponse(@SerializedName("Response")
 
 
 const val SEARCH_RESPONSE_TRUE = "TRUE"
-const val SEARCH_RESPONSE_FALSE = "FASLE"
+const val SEARCH_RESPONSE_FALSE = "FALSE"

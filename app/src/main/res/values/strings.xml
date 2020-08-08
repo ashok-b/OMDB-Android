@@ -3,4 +3,6 @@
     <string name="lbl_retry">Retry</string>
     <string name="lbl_action_search">Search</string>
     <string name="format_search_text">Current Search:: %s</string>
+    <string name="lbl_no_internet">Not connected to internet</string>
+    <string name="no_data_found">No data found for given search term</string>
 </resources>
