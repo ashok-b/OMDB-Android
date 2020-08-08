@@ -1,7 +1,7 @@
 package com.ashok.omdbsearch
 
 import android.app.Application
-import com.ashok.academy.omdb.db.OMDbDatabase
+import com.ashok.omdbsearch.db.OMDbDatabase
 
 class OMDBApp : Application() {
 
