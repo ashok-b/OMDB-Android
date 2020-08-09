@@ -40,14 +40,9 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-        searchResultsAdapter = SearchResultsAdapter()
-        searchItemsRcv.adapter = searchResultsAdapter
-        searchItemsRcv.layoutManager = LinearLayoutManager(this)
+        setupRecycleViewUI()
 
-        omDbViewModel = ViewModelProvider(
-            this,
-            OMDbViewModel.OMDbViewModelFactory
-        ).get(OMDbViewModel::class.java)
+        setupViewModel()
 
 
         omDbViewModel.defaultOmDbSearchResponseFromDB.observe(this, Observer {
@@ -63,14 +58,14 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                 searchResultsAdapter.setDataSource(it)
                 showRecycleView()
             }
-            loading.visibility = View.GONE
+            showShimmerUI(false)
         })
 
         omDbViewModel.defaultOmDbSearchResponse.observe(this, Observer {
 
             when (it.status) {
                 Status.LOADING -> {
-                    loading.visibility = View.VISIBLE
+                    showShimmerUI(true)
                 }
                 Status.SUCCESS -> {
                     it.data?.let { results ->
@@ -85,11 +80,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                             searchResultsAdapter.setDataSource(results)
                             showRecycleView()
                         }
-                        loading.visibility = View.GONE
+                        showShimmerUI(false)
                     }
                 }
                 Status.ERROR -> {
-                    loading.visibility = View.GONE
+                    showShimmerUI(false)
 
                     if (CommonUtils.isNetworkAvailable(this)) {
                         updateEmptyView(it.message ?: "Error occurred", true)
@@ -109,7 +104,7 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
 
             when (it.status) {
                 Status.LOADING -> {
-                    loading.visibility = View.VISIBLE
+                    showShimmerUI(true)
                 }
                 Status.SUCCESS -> {
                     it.data?.let { results ->
@@ -122,11 +117,11 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
                             searchResultsAdapter.setDataSource(results.search!!)
                             showRecycleView()
                         }
-                        loading.visibility = View.GONE
+                        showShimmerUI(false)
                     }
                 }
                 Status.ERROR -> {
-                    loading.visibility = View.GONE
+                    showShimmerUI(false)
                     //clear
                     searchResultsAdapter.setDataSource(emptyList())
                     if (CommonUtils.isNetworkAvailable(this)) {
@@ -203,13 +198,41 @@ class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
     }
 
 
+    private fun setupRecycleViewUI() {
+        searchResultsAdapter = SearchResultsAdapter()
+        searchItemsRcv.adapter = searchResultsAdapter
+        searchItemsRcv.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun setupViewModel() {
+        omDbViewModel = ViewModelProvider(
+            this,
+            OMDbViewModel.OMDbViewModelFactory
+        ).get(OMDbViewModel::class.java)
+    }
+
+
     private fun showRecycleView() {
         searchItemsRcv.visibility = View.VISIBLE
         searchItemsEmptyInfoCv.visibility = View.GONE
+        shimmerFl.visibility = View.GONE
+    }
+
+    private fun showShimmerUI(show : Boolean) {
+        if(show){
+            searchItemsEmptyInfoCv.visibility = View.GONE
+            searchItemsRcv.visibility = View.GONE
+            shimmerFl.visibility = View.VISIBLE
+            shimmerFl.showShimmer(show)
+        }else{
+            shimmerFl.visibility = View.GONE
+            shimmerFl.hideShimmer()
+        }
     }
 
     private fun updateEmptyView(msg: String = "No data found", canShowRetry: Boolean = false) {
         searchItemsRcv.visibility = View.GONE
+        shimmerFl.visibility = View.GONE
         searchItemsEmptyInfoCv.visibility = View.VISIBLE
         searchItemsEmptyTv.visibility = View.VISIBLE
         searchItemsEmptyTv.text = msg
